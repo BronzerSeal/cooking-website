@@ -2,7 +2,7 @@ import { Flex, Text, TextField } from "@radix-ui/themes";
 import { Search } from "lucide-react";
 import { useEffect, useState, type ChangeEvent } from "react";
 import HomePageFoodEl from "../common/homePageFoodEl";
-import getDish from "@/services/getRandomDish";
+import getDish from "@/services/getDish";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState, AppDispatch } from "@/store/store";
 import { setDishes, addDish, setSearched } from "@/store/dishSlice";
