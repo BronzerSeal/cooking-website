@@ -67,3 +67,8 @@ export default tseslint.config([
   },
 ])
 ```
+To run the project you need:
+1) downoload Zip file and unpack it in any folder
+2) open folder with Visual Studio Code
+3) write in console: npm i
+4) write in console: npm run dev
