@@ -67,3 +67,10 @@ export default tseslint.config([
   },
 ])
 ```
+To run the project you need:
+1) create realtime database at firebase website
+2) downoload Zip file and unpack it in any folder
+3) open folder with Visual Studio Code
+4) write in console: npm i
+5) open config.json and replace Firebase_URl with your own link
+6) write in console: npm run dev
