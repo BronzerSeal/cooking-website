@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import dishReducer from "./dishSlice";
+import commentsReducer from "./commentsSlice";
 
 const store = configureStore({
   reducer: {
     dish: dishReducer,
+    comments: commentsReducer,
   },
 });
 

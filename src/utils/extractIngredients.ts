@@ -1,6 +1,6 @@
 import type { Meal } from "@/components/ui/homeSection";
 
-const extractIngredients = (meal: Meal) => {
+const extractIngredients = (meal: Meal & { [key: string]: any }) => {
   const ingredients: { ingredient: string; measure: string }[] = [];
 
   for (let i = 1; i <= 20; i++) {

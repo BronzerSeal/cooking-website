@@ -1,27 +1,26 @@
 import { useLocation } from "react-router-dom";
 import type { Meal } from "../ui/homeSection";
-import { Button, CheckboxGroup, Flex, Text } from "@radix-ui/themes";
+import { Button, Flex, Text } from "@radix-ui/themes";
 import { chefs } from "@/services/getChefs";
 import { getRandomNum } from "@/utils/getRandomNum";
-import { Rating, Star } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
-import RatingDistribution from "../ui/RatingDistribution";
-import { StarRating } from "@/utils/starRating";
-import extractIngredients from "@/utils/extractIngredients";
 import getDish from "@/services/getDish";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { loadCommentsList } from "@/store/commentsSlice";
+import type { AppDispatch } from "@/store/store";
+import Comments from "../ui/comments";
+import Instruction from "../ui/instruction";
+import Ingredients from "../ui/ingredients";
+import RatingBlock from "../ui/ratingBlock";
 
 function DetailDishPage() {
   const location = useLocation();
+  const dispatch = useDispatch<AppDispatch>();
   const [meal, setMeal] = useState<Meal>(location.state);
   const [loading, setLoading] = useState(false);
-  const ingredients = extractIngredients(meal);
-  const stars = getRandomNum(0.5, 5);
-  const myStyles = {
-    itemShapes: Star,
-    activeFillColor: "#171412",
-    inactiveFillColor: "#cecdc3ff",
-  };
+  const urlToCopy = window.location.href;
 
   useEffect(() => {
     const fetchMeal = async () => {
@@ -32,21 +31,23 @@ function DetailDishPage() {
         setLoading(false);
       }
     };
-
     fetchMeal();
+
+    dispatch(loadCommentsList(meal.idMeal));
   }, [meal]);
 
   if (!meal || !meal.strInstructions || loading) {
     return <Text>Loading...</Text>;
   }
 
-  const steps = meal.strInstructions
-    .split(/(?:\.\s+|\.\n)/)
-    .map((s) => s.trim())
-    .filter(Boolean);
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(urlToCopy).then(() => {
+      toast("Url copy to clickboard");
+    });
+  };
 
   return (
-    <div style={{ width: "820px", marginBottom: "20px" }}>
+    <div style={{ width: "820px", marginBottom: "90px" }}>
       <img
         src={meal.strMealThumb}
         alt={meal.strMeal}
@@ -64,6 +65,7 @@ function DetailDishPage() {
           size={"2"}
           radius="full"
           style={{ width: "85px" }}
+          onClick={copyToClipboard}
         >
           Share
         </Button>
@@ -79,63 +81,14 @@ function DetailDishPage() {
         wrap={"wrap"}
         mb={"2"}
       >
-        <Flex direction={"column"}>
-          <Text weight={"bold"} style={{ fontSize: "36px" }}>
-            {stars}
-          </Text>
-          <Rating
-            style={{ maxWidth: 140 }}
-            itemStyles={myStyles}
-            value={stars}
-            readOnly
-          />
-          <Text mt={"2"}>{`${getRandomNum(1, 500)} reviews`}</Text>
-        </Flex>
-        <RatingDistribution ratings={StarRating(stars)} />
+        <RatingBlock />
       </Flex>
 
-      <Text weight={"bold"} size={"6"}>
-        Ingredients
-      </Text>
-      <Flex direction="column" gap="3" mb={"4"}>
-        <CheckboxGroup.Root size="3" mt={"4"}>
-          {ingredients.map((ingredient, index) => {
-            return (
-              <Text
-                key={index}
-                as="label"
-                size="4"
-                color="orange"
-                style={{ color: "black" }}
-                mt={"2"}
-              >
-                <Flex gap="2">
-                  <CheckboxGroup.Item value={index.toString()} />{" "}
-                  {`${ingredient.measure} ${ingredient.ingredient}`}
-                </Flex>
-              </Text>
-            );
-          })}
-        </CheckboxGroup.Root>
-      </Flex>
+      <Ingredients meal={meal} />
 
-      <Text as="div" weight={"bold"} size={"6"}>
-        Instructions
-      </Text>
-      {steps.map((step, index) => (
-        <Flex key={index} gap="2" align="start" mt={"3"}>
-          <Text weight="bold" size="4" style={{ minWidth: "60px" }}>
-            Step {index + 1}
-          </Text>
-          <Text
-            size="3"
-            color="gray"
-            style={{ width: "400px", color: "#9b7d66ff" }}
-          >
-            {step}.
-          </Text>
-        </Flex>
-      ))}
+      <Instruction instruction={meal.strInstructions} />
+
+      <Comments id={+meal.idMeal} />
     </div>
   );
 }

@@ -129,7 +129,7 @@ function HomeSection() {
         Recipes
       </Text>
       <br />
-      {dish.length === 0 && <p>Didn't find your dish, try other filters</p>}
+      {dish.length === 0 && <p>Didn't find dishes, try other filters</p>}
       {!search ? (
         <Flex gap="4" wrap="wrap">
           {dish.slice(0, 4).map((meal, index) => (

@@ -4,6 +4,7 @@ import MainPage from "./components/page/mainPage";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import DetailDishPage from "./components/page/detailDishPage";
 import { Container } from "@radix-ui/themes";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
@@ -19,6 +20,8 @@ function App() {
           </Routes>
         </BrowserRouter>
       </Container>
+
+      <ToastContainer />
     </>
   );
 }
