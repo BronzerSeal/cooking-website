@@ -4,6 +4,7 @@ const commentEndpoint = "comment/";
 
 const commentService = {
   createComment: async (payload: CommentProps) => {
+    console.log(payload);
     const { data } = await commentHttp.put(
       commentEndpoint + payload._id,
       payload

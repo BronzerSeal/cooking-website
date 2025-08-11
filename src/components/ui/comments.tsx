@@ -9,6 +9,7 @@ import {
 } from "@/store/commentsSlice";
 import type { FC } from "react";
 import type { AppDispatch } from "@/store/store";
+import { getIsLoggedIn } from "@/store/userSlice";
 
 type comType = {
   id: number;
@@ -17,6 +18,7 @@ type comType = {
 const Comments: FC<comType> = ({ id }) => {
   const dispatch = useDispatch<AppDispatch>();
   const comments = useSelector(getComments());
+  const isLoggedIn = useSelector(getIsLoggedIn());
   const handleSubmit = (data: { content: string }) => {
     dispatch(createComment({ ...data, dishId: id }));
   };
@@ -36,7 +38,13 @@ const Comments: FC<comType> = ({ id }) => {
           <Text>No comments yet...</Text>
         )}
       </Flex>
-      <AddCommentForm onSubmit={handleSubmit} />
+      {isLoggedIn ? (
+        <AddCommentForm onSubmit={handleSubmit} />
+      ) : (
+        <Text as="div" size={"4"} weight={"bold"} mt={"4"}>
+          Enter to post comments
+        </Text>
+      )}
     </>
   );
 };

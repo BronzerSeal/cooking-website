@@ -2,12 +2,12 @@ import commentService from "@/services/comment.service";
 import { createAction, createSlice, type Dispatch } from "@reduxjs/toolkit";
 import type { RootState } from "./store";
 import { nanoid } from "nanoid";
-import { faker } from "@faker-js/faker";
 
 export type CommentProps = {
   content: string;
   created_at: number;
   dishId: number;
+  userId: string;
   name: string;
   _id: string;
   img: string;
@@ -86,12 +86,10 @@ export const loadCommentsList =
 export const createComment =
   (payload: payload) => async (dispatch: Dispatch) => {
     dispatch(addCommentRequested(payload));
-    const comment = {
+    const comment: any = {
       ...payload,
       _id: nanoid(),
       created_at: Date.now(),
-      name: faker.internet.username(),
-      img: `https://api.dicebear.com/7.x/adventurer/svg?seed=${Math.random()}`,
     };
     try {
       const { content } = await commentService.createComment(comment);

@@ -1,4 +1,5 @@
 {
-  "baseURL": "Firebase_URL",
-  "isFireBase": true
+  "baseURL": "FIREBASE_URL",
+  "isFireBase": true,
+  "key": "FIREBASE_KEY"
 }

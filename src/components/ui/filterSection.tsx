@@ -86,7 +86,6 @@ function FilterSection() {
       const mealsArrays = results.map((res) => res.data.meals);
 
       if (mealsArrays.some((arr) => arr.length === 0)) {
-        console.log("No meals found");
         return;
       }
 

@@ -1,12 +1,15 @@
+import { getCurrentUserId } from "@/store/userSlice";
 import { displayDate } from "@/utils/displayDate";
 import { Avatar, Box, Card, Flex, Text } from "@radix-ui/themes";
 import { X } from "lucide-react";
 import type { FC } from "react";
+import { useSelector } from "react-redux";
 
 type CommentProps = {
   content: string;
   created_at: number;
   _id: string;
+  userId: string;
   dishId: number;
   name: string;
   img: string;
@@ -17,11 +20,12 @@ const CommentComponent: FC<CommentProps> = ({
   content,
   created_at: created,
   _id: id,
-  // dishId,
+  userId,
   img,
   name,
   onRemove,
 }) => {
+  const myId = useSelector(getCurrentUserId());
   return (
     <Box maxWidth="760px">
       <Card>
@@ -35,15 +39,23 @@ const CommentComponent: FC<CommentProps> = ({
               <Text ml="3" as="div" size="2" color="gray">
                 {displayDate(created)}
               </Text>
-              <button
-                style={{
-                  marginLeft: "auto",
-                  cursor: "pointer",
-                }}
-                onClick={() => onRemove(id)}
-              >
-                <X />
-              </button>
+              {userId === myId ? (
+                <button
+                  style={{
+                    marginLeft: "auto",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => onRemove(id)}
+                >
+                  <X />
+                </button>
+              ) : (
+                <button
+                  style={{
+                    marginLeft: "auto",
+                  }}
+                />
+              )}
             </Flex>
             <Text as="div" size="2" color="gray">
               {content}

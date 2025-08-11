@@ -9,11 +9,11 @@ function transformData(data: any) {
     : data;
 }
 
-const commentHttp = axios.create({
+const http = axios.create({
   baseURL: configFile.baseURL,
 });
 
-commentHttp.interceptors.request.use(
+http.interceptors.request.use(
   async function (config) {
     if (configFile.isFireBase && config.url !== undefined) {
       const containSlash = /\/$/gi.test(config.url);
@@ -27,11 +27,18 @@ commentHttp.interceptors.request.use(
   }
 );
 
-commentHttp.interceptors.response.use((res) => {
+http.interceptors.response.use((res) => {
   if (configFile.isFireBase) {
     res.data = { content: transformData(res.data) };
   }
   return res;
 });
 
+export const commentHttp = {
+  get: http.get,
+  post: http.post,
+  put: http.put,
+  delete: http.delete,
+  patch: http.patch,
+};
 export default commentHttp;

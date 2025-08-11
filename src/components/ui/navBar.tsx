@@ -5,8 +5,38 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/components/common/avatar";
+import { useNavigate } from "react-router";
+import { useSelector } from "react-redux";
+import { getIsLoggedIn } from "@/store/userSlice";
+import { useEffect, useState } from "react";
+import userService from "@/services/user.service";
 
 function NavBar() {
+  const navigate = useNavigate();
+  const isLoggedIn = useSelector(getIsLoggedIn());
+  const [user, setUser] = useState({ image: "" });
+
+  const handleAvatarClick = () => {
+    navigate("/login");
+  };
+  const handleLogIn = () => {
+    navigate("/userPage");
+  };
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const data = await userService.getCurrentUser();
+        setUser(data.content);
+      } catch (error) {
+        console.error("Ошибка загрузки пользователя", error);
+      }
+    }
+    fetchUser();
+  }, []);
+
+  if (!user) return <p>Loading...</p>;
+
   return (
     <Flex
       justify={"between"}
@@ -60,8 +90,10 @@ function NavBar() {
           </Link>
         </Flex>
       </Flex>
-      <Avatar>
-        <AvatarImage src="https://github.com/shadcn.png" />
+      <Avatar onClick={isLoggedIn ? handleLogIn : handleAvatarClick}>
+        <AvatarImage
+          src={isLoggedIn ? user.image : "https://github.com/shadcn.png"}
+        />
         <AvatarFallback>CN</AvatarFallback>
       </Avatar>
     </Flex>

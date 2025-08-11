@@ -1,14 +1,39 @@
+import userService from "@/services/user.service";
 import { validator } from "@/utils/validator";
 import { Button, Flex, Text, TextArea } from "@radix-ui/themes";
-import { useState, type FC } from "react";
+import { useEffect, useState, type FC } from "react";
 
+type CommentData = {
+  content: string;
+  name: string;
+  img: string;
+  userId: string;
+};
 type AddCommentFormProps = {
-  onSubmit: (data: { content: string }) => void;
+  onSubmit: (data: CommentData) => void;
+};
+type User = {
+  name: string;
+  image: string;
+  _id: string;
 };
 
 const AddCommentForm: FC<AddCommentFormProps> = ({ onSubmit }) => {
+  const [user, setUser] = useState<User>({ name: "", image: "", _id: "" });
   const [data, setData] = useState<{ content: string }>({ content: "" });
   const [errors, setErrors] = useState<{ content?: string }>({ content: "" });
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const data = await userService.getCurrentUser();
+        setUser(data.content);
+      } catch (error) {
+        console.error("Ошибка загрузки пользователя", error);
+      }
+    }
+    fetchUser();
+  }, []);
 
   const handleChange = ({ target }: React.ChangeEvent<HTMLTextAreaElement>) => {
     setData((prevState) => ({
@@ -40,7 +65,8 @@ const AddCommentForm: FC<AddCommentFormProps> = ({ onSubmit }) => {
     e.preventDefault();
     const isValid = validate();
     if (!isValid) return;
-    onSubmit(data);
+
+    onSubmit({ ...data, name: user.name, img: user.image, userId: user._id });
     clearForm();
   };
 
